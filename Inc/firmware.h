@@ -16,6 +16,10 @@
 #define TEMP_OFFSET							17
 #define TEMP_NUM								1000
 #define TEMP_DEN								1365
+#define MSG_UART_OK							"OK\r\n"
+#define MSG_UART_NOK						"ERROR\r\n"
+#define MSG_REG_ON							"Regulation enabled.\r\n"
+#define MSG_REG_OFF							"Regulation disabled.\r\n"
 
 /* Flash map */
 #define __FLASH_start_pwm				64
@@ -23,8 +27,8 @@
 
 typedef enum {
 	OFF=0,
-	ON,
-}LedStates_t;
+	ON
+}States_t;
 
 typedef enum {
 	RED=0,
@@ -73,13 +77,14 @@ HAL_StatusTypeDef 	EEPROM_WriteByte(uint32_t address, uint32_t data);
 uint32_t 						Firmware_Init(void);
 uint32_t 						LM35_Convert(void);
 uint32_t 						PWM_Set(RegProfile_t * channel, uint32_t duty_cycle);
+uint32_t 						Set_Regulation(States_t state);
 uint32_t 						PWM_Update(RegProfile_t * channel, uint32_t temp);
 uint32_t 						Param_Backup(RegProfile_t * profile, uint32_t channel);
 uint32_t 						Param_Restore(void);
 uint32_t 						UART_Send(char * pBuffer, uint32_t length);
 uint32_t 						CheckValue(uint32_t val, uint32_t min, uint32_t max);
 uint32_t 						CheckNArgs(UART_message_t * message, uint32_t nargs);
-uint32_t 						LED(RegProfile_t * channel, LedColors_t color, LedStates_t state);
+uint32_t 						LED(RegProfile_t * channel, LedColors_t color, States_t state);
 uint32_t 						DustOff(void);
 uint32_t 						EEPROM_ReadWord(uint32_t address);
 uint32_t 						UART_Execute(void);
@@ -108,5 +113,6 @@ extern uint8_t 					g_UART_Buffer_Array[DEFAULT_UART_LENGTH];
 extern bool 						g_UART_Message_Ready;
 extern bool 						g_trace_enable;
 extern bool							g_usrbtn;
+extern bool							g_reg_enable;
 
 

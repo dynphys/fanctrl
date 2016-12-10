@@ -13,6 +13,7 @@ uint8_t 					g_UART_Buffer_Array[DEFAULT_UART_LENGTH];
 bool 							g_UART_Message_Ready = false;
 bool 							g_trace_enable = false;
 bool 							g_usrbtn = false;
+bool							g_reg_enable = false;
 
 /* Regulation profiles */
 RegProfile_t 			g_RegCh1;
@@ -93,6 +94,52 @@ uint32_t Firmware_Init(void) {
 	g_RegCh4.Green_Led.GPIO_Pin=GPIO_PIN_8;
 	
 	return 0;
+}
+
+uint32_t Set_Regulation(States_t state){
+	uint32_t ret = 0;
+	char buf[DEFAULT_UART_LENGTH];
+	
+	memset(buf,0,sizeof(buf));
+	
+	if(state==ON){
+		g_reg_enable=true;
+		
+		g_RegCh1.RegState=UNKNOWN;
+		g_RegCh2.RegState=UNKNOWN;
+		g_RegCh3.RegState=UNKNOWN;
+		g_RegCh4.RegState=UNKNOWN;
+		
+		strcpy(buf,MSG_REG_ON);
+		UART_Send(buf,strlen(buf));
+		ret=0;
+	}
+	else if(state==OFF){
+		g_reg_enable=false;
+		
+		PWM_Set(&g_RegCh1, 100);
+		PWM_Set(&g_RegCh2, 100);
+		PWM_Set(&g_RegCh3, 100);
+		PWM_Set(&g_RegCh4, 100);
+		
+		LED(&g_RegCh1,RED,OFF);
+		LED(&g_RegCh1,GREEN,OFF);
+		LED(&g_RegCh2,RED,OFF);
+		LED(&g_RegCh2,GREEN,OFF);
+		LED(&g_RegCh3,RED,OFF);
+		LED(&g_RegCh3,GREEN,OFF);
+		LED(&g_RegCh4,RED,OFF);
+		LED(&g_RegCh4,GREEN,OFF);
+
+		strcpy(buf,MSG_REG_OFF);
+		UART_Send(buf,strlen(buf));
+		ret=0;
+	}
+	else{
+		ret=1;
+	}
+	
+	return ret;
 }
 
 uint32_t PWM_Update(RegProfile_t * channel, uint32_t temp){
@@ -256,7 +303,7 @@ uint32_t CheckNArgs(UART_message_t * message, uint32_t nargs){
 	return 0;
 }
 
-uint32_t LED(RegProfile_t * channel, LedColors_t color, LedStates_t state) {
+uint32_t LED(RegProfile_t * channel, LedColors_t color, States_t state) {
 	uint32_t ret=0;	
 	GPIO_PinState gps;
 	

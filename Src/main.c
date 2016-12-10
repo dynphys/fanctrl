@@ -81,7 +81,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	uint32_t 	ret = 0;
-	char 			buffer[DEFAULT_UART_LENGTH];
+	char 			buf[DEFAULT_UART_LENGTH];
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -104,6 +104,7 @@ int main(void)
 	Firmware_Init();
 	Param_Restore();
 	DustOff();
+	Set_Regulation(ON);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,37 +113,47 @@ int main(void)
   {
 		//Every 500ms...
 		if(g_timer_1ms>500){
-			g_temp = LM35_Convert();
-
-			PWM_Update(&g_RegCh1, g_temp);
-			PWM_Update(&g_RegCh2, g_temp);
-			PWM_Update(&g_RegCh3, g_temp);
-			PWM_Update(&g_RegCh4, g_temp);
 			
-			if(g_trace_enable==true) {
-				memset(buffer,0,sizeof(buffer));
-				sprintf(buffer,"%d\r\n",g_temp);
-				UART_Send(buffer,strlen(buffer));
+			if(g_reg_enable==true){
+				g_temp = LM35_Convert();
+
+				PWM_Update(&g_RegCh1, g_temp);
+				PWM_Update(&g_RegCh2, g_temp);
+				PWM_Update(&g_RegCh3, g_temp);
+				PWM_Update(&g_RegCh4, g_temp);
+				
+				if(g_trace_enable==true) {
+					memset(buf,0,sizeof(buf));
+					sprintf(buf,"%d\r\n",g_temp);
+					UART_Send(buf,strlen(buf));
+				}
 			}
 			
 			g_timer_1ms = 0;
 		}
 		
 		if(g_UART_Message_Ready==true){
-			
+			memset(buf,0,sizeof(buf));
 			ret = UART_Execute();
 			
 			if(ret>0){
-				UART_Send("ERROR\r\n",7);
+				strcpy(buf,MSG_UART_NOK);
 			}
 			else{
-				UART_Send("OK\r\n",7);
+				strcpy(buf,MSG_UART_OK);
 			}
 			
+			UART_Send(buf, strlen(buf));
 			g_UART_Message_Ready=false;
 		}
 		
 		if(g_usrbtn == true){
+			if(g_reg_enable==true){
+				Set_Regulation(OFF);
+			}
+			else{
+				Set_Regulation(ON);
+			}
 			g_usrbtn = false;
 		}
   /* USER CODE END WHILE */
