@@ -41,6 +41,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define USRBTN_Pin GPIO_PIN_4
+#define USRBTN_GPIO_Port GPIOA
+#define TEMP_Pin GPIO_PIN_7
+#define TEMP_GPIO_Port GPIOA
 #define LED_RED_2_Pin GPIO_PIN_1
 #define LED_RED_2_GPIO_Port GPIOB
 #define LED_GREEN_3_Pin GPIO_PIN_8

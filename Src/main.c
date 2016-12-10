@@ -50,8 +50,8 @@ DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-	uint32_t temp=0;
-	uint32_t i=0;
+	uint32_t g_temp=0;
+	uint32_t g_i=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,8 +80,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint32_t ret = 0;
-	char buffer[DEFAULT_UART_LENGTH];
+	uint32_t 	ret = 0;
+	char 			buffer[DEFAULT_UART_LENGTH];
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -105,23 +105,23 @@ int main(void)
 	Param_Restore();
 	DustOff();
   /* USER CODE END 2 */
- 
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1)
   {
 		//Every 500ms...
 		if(g_timer_1ms>500){
-			temp = LM35_Convert();
+			g_temp = LM35_Convert();
 
-			PWM_Update(&g_RegCh1, temp);
-			PWM_Update(&g_RegCh2, temp);
-			PWM_Update(&g_RegCh3, temp);
-			PWM_Update(&g_RegCh4, temp);
+			PWM_Update(&g_RegCh1, g_temp);
+			PWM_Update(&g_RegCh2, g_temp);
+			PWM_Update(&g_RegCh3, g_temp);
+			PWM_Update(&g_RegCh4, g_temp);
 			
 			if(g_trace_enable==true) {
 				memset(buffer,0,sizeof(buffer));
-				sprintf(buffer,"%d\r\n",temp);
+				sprintf(buffer,"%d\r\n",g_temp);
 				UART_Send(buffer,strlen(buffer));
 			}
 			
@@ -141,6 +141,10 @@ int main(void)
 			
 			g_UART_Message_Ready=false;
 		}
+		
+		if(g_usrbtn == true){
+			g_usrbtn = false;
+		}
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -154,6 +158,7 @@ int main(void)
 */
 void SystemClock_Config(void)
 {
+
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
@@ -367,7 +372,7 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel4_5_6_7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
 }
@@ -397,11 +402,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  /*Configure GPIO pin : USRBTN_Pin */
+  GPIO_InitStruct.Pin = USRBTN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(USRBTN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA5 PA6 */
   GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6;
@@ -437,6 +442,10 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_GREEN_3_Pin|LED_GREEN_0_Pin|LED_RED_0_Pin|LED_RED_3_Pin 
                           |LED_GREEN_1_Pin, GPIO_PIN_RESET);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_15_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 
 }
 

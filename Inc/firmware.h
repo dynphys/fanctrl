@@ -90,6 +90,7 @@ uint32_t 						cmd_Hyst(void);
 uint32_t 						cmd_Config(void);
 void 								HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 void 								HAL_UART_RxCpltCallback (UART_HandleTypeDef * huart);
+void 								HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 #endif
 
@@ -106,5 +107,6 @@ extern uint8_t 					g_UART_Buffer;
 extern uint8_t 					g_UART_Buffer_Array[DEFAULT_UART_LENGTH];
 extern bool 						g_UART_Message_Ready;
 extern bool 						g_trace_enable;
+extern bool							g_usrbtn;
 
 

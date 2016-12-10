@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/Lucas/Desktop/FAN_Controller/softX_31K6/Inc
+HeaderPath=C:/Users/Lucas/Documents/GitHub/fanctrl/Inc
 HeaderFiles=stm32l0xx_it.h;stm32l0xx_hal_conf.h;mxconstants.h;
-SourcePath=C:/Users/Lucas/Desktop/FAN_Controller/softX_31K6/Src
+SourcePath=C:/Users/Lucas/Documents/GitHub/fanctrl/Src
 SourceFiles=stm32l0xx_it.h;stm32l0xx_hal_conf.h;mxconstants.h;stm32l0xx_it.c;stm32l0xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

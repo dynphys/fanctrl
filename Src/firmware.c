@@ -12,6 +12,7 @@ uint8_t 					g_UART_Buffer=0;
 uint8_t 					g_UART_Buffer_Array[DEFAULT_UART_LENGTH];
 bool 							g_UART_Message_Ready = false;
 bool 							g_trace_enable = false;
+bool 							g_usrbtn = false;
 
 /* Regulation profiles */
 RegProfile_t 			g_RegCh1;
@@ -379,6 +380,12 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 		g_lm35_cv_cmplt=1;
 }
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+		if(GPIO_Pin == GPIO_PIN_4) {
+			g_usrbtn = true;
+		}
+}
+
 uint32_t UART_Execute(void) {
 	uint32_t ret = 1;
 	
@@ -495,7 +502,7 @@ uint32_t cmd_Hyst(void) {
 }
 
 uint32_t cmd_Config(void) {
-	uint32_t ret = 0;
+	uint32_t ret, i = 0;
 	char txBuffer[DEFAULT_UART_LENGTH];
 	RegProfile_t * pArr[4] = {&g_RegCh1,&g_RegCh2,&g_RegCh3,&g_RegCh4};
 	
