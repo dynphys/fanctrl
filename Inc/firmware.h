@@ -63,23 +63,23 @@ typedef struct {
 	LED_t Green_Led;
 } RegProfile_t;
 
-uint32_t Firmware_Init(void);
-uint32_t LM35_Convert(void);
-uint32_t PWM_Set(RegProfile_t * channel, uint32_t duty_cycle);
-uint32_t PWM_Update(RegProfile_t * channel, uint32_t temp);
+uint32_t 						Firmware_Init(void);
+uint32_t 						LM35_Convert(void);
+uint32_t 						PWM_Set(RegProfile_t * channel, uint32_t duty_cycle);
+uint32_t 						PWM_Update(RegProfile_t * channel, uint32_t temp);
 
-uint32_t Param_Backup(RegProfile_t * profile, uint32_t channel);
-uint32_t Param_Restore(void);
-uint32_t UART_Send(char * pBuffer, uint32_t length);
-uint32_t CheckValue(uint32_t val, uint32_t min, uint32_t max);
-uint32_t CheckNArgs(UART_message_t * message, uint32_t nargs);
-uint32_t LED(RegProfile_t * channel, LedColors_t color, LedStates_t state);
-uint32_t DustOff(void);
-uint32_t EEPROM_ReadByte(uint32_t address);
-HAL_StatusTypeDef EEPROM_WriteWord(uint32_t address, uint32_t data);
-HAL_StatusTypeDef EEPROM_WriteByte(uint32_t address, uint32_t data);
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
-uint32_t UART_Execute(void);
+uint32_t 						Param_Backup(RegProfile_t * profile, uint32_t channel);
+uint32_t 						Param_Restore(void);
+uint32_t 						UART_Send(char * pBuffer, uint32_t length);
+uint32_t 						CheckValue(uint32_t val, uint32_t min, uint32_t max);
+uint32_t 						CheckNArgs(UART_message_t * message, uint32_t nargs);
+uint32_t 						LED(RegProfile_t * channel, LedColors_t color, LedStates_t state);
+uint32_t 						DustOff(void);
+uint32_t 						EEPROM_ReadWord(uint32_t address);
+HAL_StatusTypeDef 	EEPROM_WriteWord(uint32_t address, uint32_t data);
+HAL_StatusTypeDef 	EEPROM_WriteByte(uint32_t address, uint32_t data);
+void 								HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
+uint32_t 						UART_Execute(void);
 
 uint32_t cmd_Set(void);
 uint32_t cmd_Trace(void);

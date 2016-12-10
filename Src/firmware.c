@@ -202,10 +202,10 @@ uint32_t Param_Restore(void) {
 	//Load parameters from EEPROM
 	for(i=0;i<4;i++)
 	{
-		pArr[i]->T_reg = EEPROM_ReadByte(16*i);
-		pArr[i]->D_min = EEPROM_ReadByte(16*i+4);
-		pArr[i]->D_max = EEPROM_ReadByte(16*i+8);
-		pArr[i]->Hys = EEPROM_ReadByte(16*i+12);
+		pArr[i]->T_reg = EEPROM_ReadWord(16*i);
+		pArr[i]->D_min = EEPROM_ReadWord(16*i+4);
+		pArr[i]->D_max = EEPROM_ReadWord(16*i+8);
+		pArr[i]->Hys = EEPROM_ReadWord(16*i+12);
 	}	
 	
 	return 0;
@@ -286,8 +286,8 @@ uint32_t DustOff(void) {
 	uint32_t start_pwm, start_duration, ret,i;
 	RegProfile_t * pArr[4] = {&g_RegCh1,&g_RegCh2,&g_RegCh3,&g_RegCh4};
 	
-	start_pwm = EEPROM_ReadByte(__FLASH_start_pwm);
-	start_duration = EEPROM_ReadByte(__FLASH_start_duration);
+	start_pwm = EEPROM_ReadWord(__FLASH_start_pwm);
+	start_duration = EEPROM_ReadWord(__FLASH_start_duration);
 	
 	//Set channels
 	ret=0;
@@ -348,7 +348,7 @@ uint32_t DustOff(void) {
 	return 0;
 }
 
-uint32_t EEPROM_ReadByte(uint32_t address) {
+uint32_t EEPROM_ReadWord(uint32_t address) {
 	address += 0x08080000;
 	return *(uint32_t *)address;
 }

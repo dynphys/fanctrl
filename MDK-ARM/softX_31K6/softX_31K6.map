@@ -89,7 +89,7 @@ Section Cross References
     main.o(i.main) refers to main.o(.data) for temp
     main.o(i.main) refers to firmware.o(.bss) for g_RegCh1
     firmware.o(i.CheckNArgs) refers to strlen.o(.text) for strlen
-    firmware.o(i.DustOff) refers to firmware.o(i.EEPROM_ReadByte) for EEPROM_ReadByte
+    firmware.o(i.DustOff) refers to firmware.o(i.EEPROM_ReadWord) for EEPROM_ReadWord
     firmware.o(i.DustOff) refers to firmware.o(i.PWM_Set) for PWM_Set
     firmware.o(i.DustOff) refers to uidiv.o(.text) for __aeabi_uidivmod
     firmware.o(i.DustOff) refers to firmware.o(i.LED) for LED
@@ -126,7 +126,7 @@ Section Cross References
     firmware.o(i.PWM_Update) refers to firmware.o(i.PWM_Set) for PWM_Set
     firmware.o(i.PWM_Update) refers to firmware.o(i.LED) for LED
     firmware.o(i.Param_Backup) refers to firmware.o(i.EEPROM_WriteWord) for EEPROM_WriteWord
-    firmware.o(i.Param_Restore) refers to firmware.o(i.EEPROM_ReadByte) for EEPROM_ReadByte
+    firmware.o(i.Param_Restore) refers to firmware.o(i.EEPROM_ReadWord) for EEPROM_ReadWord
     firmware.o(i.Param_Restore) refers to firmware.o(.constdata) for .constdata
     firmware.o(i.UART_Execute) refers to strcmp.o(.text) for strcmp
     firmware.o(i.UART_Execute) refers to firmware.o(i.cmd_Set) for cmd_Set
@@ -1470,7 +1470,7 @@ Image Symbol Table
     i.DMA_SetConfig                          0x08000a4c   Section        0  stm32l0xx_hal_dma.o(i.DMA_SetConfig)
     DMA_SetConfig                            0x08000a4d   Thumb Code    32  stm32l0xx_hal_dma.o(i.DMA_SetConfig)
     i.DustOff                                0x08000a6c   Section        0  firmware.o(i.DustOff)
-    i.EEPROM_ReadByte                        0x08000c3c   Section        0  firmware.o(i.EEPROM_ReadByte)
+    i.EEPROM_ReadWord                        0x08000c3c   Section        0  firmware.o(i.EEPROM_ReadWord)
     i.EEPROM_WriteWord                       0x08000c4c   Section        0  firmware.o(i.EEPROM_WriteWord)
     i.Error_Handler                          0x08000c74   Section        0  main.o(i.Error_Handler)
     i.FLASH_SetErrorCode                     0x08000c78   Section        0  stm32l0xx_hal_flash.o(i.FLASH_SetErrorCode)
@@ -1765,7 +1765,7 @@ Image Symbol Table
     CheckValue                               0x08000a27   Thumb Code    20  firmware.o(i.CheckValue)
     DMA1_Channel4_5_6_7_IRQHandler           0x08000a3d   Thumb Code    10  stm32l0xx_it.o(i.DMA1_Channel4_5_6_7_IRQHandler)
     DustOff                                  0x08000a6d   Thumb Code   442  firmware.o(i.DustOff)
-    EEPROM_ReadByte                          0x08000c3d   Thumb Code    10  firmware.o(i.EEPROM_ReadByte)
+    EEPROM_ReadWord                          0x08000c3d   Thumb Code    10  firmware.o(i.EEPROM_ReadWord)
     EEPROM_WriteWord                         0x08000c4d   Thumb Code    34  firmware.o(i.EEPROM_WriteWord)
     Error_Handler                            0x08000c75   Thumb Code     4  main.o(i.Error_Handler)
     FLASH_WaitForLastOperation               0x08000d45   Thumb Code   182  stm32l0xx_hal_flash.o(i.FLASH_WaitForLastOperation)
@@ -1958,7 +1958,7 @@ Memory Map of the image
     0x08000a3c   0x00000010   Code   RO          172    i.DMA1_Channel4_5_6_7_IRQHandler  stm32l0xx_it.o
     0x08000a4c   0x00000020   Code   RO         1639    i.DMA_SetConfig     stm32l0xx_hal_dma.o
     0x08000a6c   0x000001d0   Code   RO          312    i.DustOff           firmware.o
-    0x08000c3c   0x00000010   Code   RO          313    i.EEPROM_ReadByte   firmware.o
+    0x08000c3c   0x00000010   Code   RO          313    i.EEPROM_ReadWord   firmware.o
     0x08000c4c   0x00000028   Code   RO          315    i.EEPROM_WriteWord  firmware.o
     0x08000c74   0x00000004   Code   RO          238    i.Error_Handler     main.o
     0x08000c78   0x000000cc   Code   RO         2311    i.FLASH_SetErrorCode  stm32l0xx_hal_flash.o
