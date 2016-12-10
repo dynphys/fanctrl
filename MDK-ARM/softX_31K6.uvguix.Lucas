@@ -3408,9 +3408,9 @@
       </Doc>
       <Doc>
         <Name>..\Src\firmware.c</Name>
-        <ColumnNumber>34</ColumnNumber>
-        <TopLine>247</TopLine>
-        <CurrentLine>290</CurrentLine>
+        <ColumnNumber>16</ColumnNumber>
+        <TopLine>147</TopLine>
+        <CurrentLine>178</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
@@ -3462,9 +3462,9 @@
       </Doc>
       <Doc>
         <Name>../Inc/firmware.h</Name>
-        <ColumnNumber>35</ColumnNumber>
-        <TopLine>52</TopLine>
-        <CurrentLine>78</CurrentLine>
+        <ColumnNumber>36</ColumnNumber>
+        <TopLine>1</TopLine>
+        <CurrentLine>18</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

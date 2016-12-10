@@ -175,9 +175,9 @@ uint32_t LM35_Convert(void) {
 		ret=0;
 	}
 	
-	ret = 1000 * ret;
-	ret = ret / 1365;
-	ret = ret - 17;
+	ret = TEMP_NUM * ret;
+	ret = ret / TEMP_DEN;
+	ret = ret - TEMP_OFFSET;
 	
 	HAL_ADC_Stop_IT(&hadc);
 	
