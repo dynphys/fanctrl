@@ -111,24 +111,24 @@ int main(void)
 	while (1)
   {
 		//Every 500ms...
-		if(timer_1ms>500){
+		if(g_timer_1ms>500){
 			temp = LM35_Convert();
 
-			PWM_Update(&RegCh1, temp);
-			PWM_Update(&RegCh2, temp);
-			PWM_Update(&RegCh3, temp);
-			PWM_Update(&RegCh4, temp);
+			PWM_Update(&g_RegCh1, temp);
+			PWM_Update(&g_RegCh2, temp);
+			PWM_Update(&g_RegCh3, temp);
+			PWM_Update(&g_RegCh4, temp);
 			
-			if(trace_enable==true) {
+			if(g_trace_enable==true) {
 				memset(buffer,0,sizeof(buffer));
 				sprintf(buffer,"%d\r\n",temp);
 				UART_Send(buffer,strlen(buffer));
 			}
 			
-			timer_1ms = 0;
+			g_timer_1ms = 0;
 		}
 		
-		if(UART_Message_Ready==true){
+		if(g_UART_Message_Ready==true){
 			
 			ret = UART_Execute();
 			
@@ -139,7 +139,7 @@ int main(void)
 				UART_Send("OK\r\n",7);
 			}
 			
-			UART_Message_Ready=false;
+			g_UART_Message_Ready=false;
 		}
   /* USER CODE END WHILE */
 

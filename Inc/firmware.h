@@ -91,18 +91,18 @@ void HAL_UART_RxCpltCallback (UART_HandleTypeDef * huart);
 
 #endif
 
-extern uint32_t timer_1ms;
-extern uint32_t lm35_cv_cmplt;
+extern uint32_t g_timer_1ms;
+extern uint32_t g_lm35_cv_cmplt;
 
 extern UART_message_t g_mes;
-extern uint32_t UART_Buffer_Index;
-extern uint8_t UART_Buffer;
-extern uint8_t UART_Buffer_Array[DEFAULT_UART_LENGTH];
-extern bool UART_Message_Ready;
-extern bool trace_enable;
+extern uint32_t g_UART_Buffer_Index;
+extern uint8_t g_UART_Buffer;
+extern uint8_t g_UART_Buffer_Array[DEFAULT_UART_LENGTH];
+extern bool g_UART_Message_Ready;
+extern bool g_trace_enable;
 
-extern RegProfile_t RegCh1;
-extern RegProfile_t RegCh2;
-extern RegProfile_t RegCh3;
-extern RegProfile_t RegCh4;
+extern RegProfile_t g_RegCh1;
+extern RegProfile_t g_RegCh2;
+extern RegProfile_t g_RegCh3;
+extern RegProfile_t g_RegCh4;
 
