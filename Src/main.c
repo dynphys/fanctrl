@@ -89,7 +89,6 @@ int main(void)
 	Firmware_Init();
 	Param_Restore();
 	DustOff();
-	Set_Regulation(ON);
   /* USER CODE END 2 */
 
   /* Infinite loop */

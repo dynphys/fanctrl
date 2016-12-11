@@ -24,6 +24,7 @@
 /* Flash map */
 #define __FLASH_start_pwm				64
 #define __FLASH_start_duration	68
+#define __FLASH_reg_enable			72
 
 typedef enum {
 	OFF=0,
@@ -85,6 +86,7 @@ uint32_t 						UART_Send(char * pBuffer, uint32_t length);
 uint32_t 						CheckValue(uint32_t val, uint32_t min, uint32_t max);
 uint32_t 						CheckNArgs(UART_message_t * message, uint32_t nargs);
 uint32_t 						LED(RegProfile_t * channel, LedColors_t color, States_t state);
+uint32_t						LED_All(LedColors_t color, States_t state);
 uint32_t 						DustOff(void);
 uint32_t 						EEPROM_ReadWord(uint32_t address);
 uint32_t 						UART_Execute(void);

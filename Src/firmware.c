@@ -127,6 +127,8 @@ uint32_t Set_Regulation(States_t state){
 		g_RegCh3.RegState=UNKNOWN;
 		g_RegCh4.RegState=UNKNOWN;
 		
+		EEPROM_WriteWord(__FLASH_reg_enable, g_reg_enable);
+		
 		strcpy(buf,MSG_REG_ON);
 		UART_Send(buf,strlen(buf));
 		ret=0;
@@ -139,15 +141,11 @@ uint32_t Set_Regulation(States_t state){
 		PWM_Set(&g_RegCh3, 100);
 		PWM_Set(&g_RegCh4, 100);
 		
-		LED(&g_RegCh1,RED,OFF);
-		LED(&g_RegCh1,GREEN,OFF);
-		LED(&g_RegCh2,RED,OFF);
-		LED(&g_RegCh2,GREEN,OFF);
-		LED(&g_RegCh3,RED,OFF);
-		LED(&g_RegCh3,GREEN,OFF);
-		LED(&g_RegCh4,RED,OFF);
-		LED(&g_RegCh4,GREEN,OFF);
-
+		LED_All(GREEN,OFF);
+		LED_All(RED,OFF);
+		
+		EEPROM_WriteWord(__FLASH_reg_enable, g_reg_enable);
+		
 		strcpy(buf,MSG_REG_OFF);
 		UART_Send(buf,strlen(buf));
 		ret=0;
@@ -271,7 +269,10 @@ uint32_t Param_Restore(void) {
 		pArr[i]->D_min = EEPROM_ReadWord(16*i+4);
 		pArr[i]->D_max = EEPROM_ReadWord(16*i+8);
 		pArr[i]->Hys = EEPROM_ReadWord(16*i+12);
-	}	
+	}
+
+	//Load regulator state
+	g_reg_enable = EEPROM_ReadWord(__FLASH_reg_enable);
 	
 	return 0;
 }
@@ -347,6 +348,22 @@ uint32_t LED(RegProfile_t * channel, LedColors_t color, States_t state) {
 	return ret;
 }
 
+uint32_t LED_All(LedColors_t color, States_t state){
+	uint32_t ret, i = 0;
+	RegProfile_t * pArr[4] = {&g_RegCh1,&g_RegCh2,&g_RegCh3,&g_RegCh4};
+	
+	ret=0;
+	for(i=0;i<4;i++){
+		ret+=LED(pArr[i],color,state);
+	}
+	
+	if(ret>0){
+		return 1;
+	}
+	
+	return 0;
+}
+
 uint32_t DustOff(void) {
 	uint32_t start_pwm, start_duration, ret,i;
 	RegProfile_t * pArr[4] = {&g_RegCh1,&g_RegCh2,&g_RegCh3,&g_RegCh4};
@@ -409,6 +426,9 @@ uint32_t DustOff(void) {
 		
 		HAL_Delay(50);
 	}
+	
+	LED_All(GREEN,OFF);
+	LED_All(RED,OFF);
 	
 	return 0;
 }
