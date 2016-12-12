@@ -337,9 +337,11 @@ uint32_t LED(RegProfile_t * channel, LedColors_t color, States_t state) {
 	
 	if(color==RED){
 		HAL_GPIO_WritePin(channel->Red_Led.GPIO_Port, channel->Red_Led.GPIO_Pin, gps);
+		channel->Red_Led.PinState=gps;
 	}
 	else if(color==GREEN){
 		HAL_GPIO_WritePin(channel->Green_Led.GPIO_Port, channel->Green_Led.GPIO_Pin, gps);
+		channel->Green_Led.PinState=gps;
 	}
 	else{
 		return 1;
