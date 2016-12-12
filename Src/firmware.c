@@ -292,12 +292,10 @@ uint32_t UART_Send(char * pBuffer, uint32_t length) {
 uint32_t CheckValue(uint32_t val, uint32_t min, uint32_t max) {
 	uint32_t ret = 0;
 	
-	if(val>=min && val<=max)
-	{
+	if(val>=min && val<=max){
 		ret=0;
 	}
-	else
-	{
+	else{
 		ret=1;
 	}
 	
