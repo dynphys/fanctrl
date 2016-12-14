@@ -62,7 +62,7 @@ uint32_t Firmware_Init(void) {
 	g_RegCh1.T_reg=DEFAULT_T_REG;
 	g_RegCh1.D_min=DEFAULT_D_MIN;
 	g_RegCh1.D_max=DEFAULT_D_MAX;
-	g_RegCh1.Hys=DEFAULT_HYS;
+	g_RegCh1.Hys=DEFAULT_HYST;
 	g_RegCh1.Red_Led.GPIO_Port=GPIOA;
 	g_RegCh1.Red_Led.GPIO_Pin=GPIO_PIN_10;
 	g_RegCh1.Green_Led.GPIO_Port=GPIOA;
@@ -76,7 +76,7 @@ uint32_t Firmware_Init(void) {
 	g_RegCh2.T_reg=DEFAULT_T_REG;
 	g_RegCh2.D_min=DEFAULT_D_MIN;
 	g_RegCh2.D_max=DEFAULT_D_MAX;
-	g_RegCh2.Hys=DEFAULT_HYS;
+	g_RegCh2.Hys=DEFAULT_HYST;
 	g_RegCh2.Red_Led.GPIO_Port=GPIOB;
 	g_RegCh2.Red_Led.GPIO_Pin=GPIO_PIN_7;
 	g_RegCh2.Green_Led.GPIO_Port=GPIOA;
@@ -90,7 +90,7 @@ uint32_t Firmware_Init(void) {
 	g_RegCh3.T_reg=DEFAULT_T_REG;
 	g_RegCh3.D_min=DEFAULT_D_MIN;
 	g_RegCh3.D_max=DEFAULT_D_MAX;
-	g_RegCh3.Hys=DEFAULT_HYS;
+	g_RegCh3.Hys=DEFAULT_HYST;
 	g_RegCh3.Red_Led.GPIO_Port=GPIOB;
 	g_RegCh3.Red_Led.GPIO_Pin=GPIO_PIN_1;
 	g_RegCh3.Green_Led.GPIO_Port=GPIOB;
@@ -104,11 +104,28 @@ uint32_t Firmware_Init(void) {
 	g_RegCh4.T_reg=DEFAULT_T_REG;
 	g_RegCh4.D_min=DEFAULT_D_MIN;
 	g_RegCh4.D_max=DEFAULT_D_MAX;
-	g_RegCh4.Hys=DEFAULT_HYS;
+	g_RegCh4.Hys=DEFAULT_HYST;
 	g_RegCh4.Red_Led.GPIO_Port=GPIOA;
 	g_RegCh4.Red_Led.GPIO_Pin=GPIO_PIN_11;
 	g_RegCh4.Green_Led.GPIO_Port=GPIOA;
 	g_RegCh4.Green_Led.GPIO_Pin=GPIO_PIN_8;
+	
+	return 0;
+}
+
+uint32_t Flash_Init(void) {
+	uint32_t ret = 0;
+	
+	ret = Param_Check();
+	if(ret>0) {
+		ret=Param_Reset();
+	}
+
+	ret=Param_Restore();
+	
+	if(ret>0) {
+		return 1;
+	}
 	
 	return 0;
 }
@@ -208,7 +225,7 @@ uint32_t PWM_Update(RegProfile_t * channel, uint32_t temp){
 uint32_t PWM_Set(RegProfile_t * channel, uint32_t duty_cycle){
 	uint32_t ret, period = 0;
 	
-	ret = CheckValue(duty_cycle,0,100);
+	ret = CheckValue(duty_cycle,MIN_PWM,MAX_PWM);
 	if(ret>0) return 1;
 	
 	period = *(channel->PWM_channel.pPeriodReg);
@@ -229,18 +246,18 @@ uint32_t LM35_Convert(void) {
 	tickstart = HAL_GetTick();
 	while(g_lm35_cv_cmplt==0 && HAL_GetTick()-tickstart<100);
 	
-	if(g_lm35_cv_cmplt==1)
-	{
+	if(g_lm35_cv_cmplt==1) {
 		ret = HAL_ADC_GetValue(&hadc);
 	}
-	else
-	{
+	else {
 		ret=0;
 	}
 	
 	ret = TEMP_NUM * ret;
 	ret = ret / TEMP_DEN;
 	ret = ret - TEMP_OFFSET;
+	
+	//ret = (3300*ret)/4096+20;
 	
 	HAL_ADC_Stop_IT(&hadc);
 	
@@ -256,6 +273,48 @@ uint32_t Param_Backup(RegProfile_t * profile, uint32_t channel) {
 	EEPROM_WriteWord(16*channel+12, profile->Hys);
 	
 	return ret;
+}
+
+uint32_t Param_Check(void) {
+	uint32_t ret, i = 0;
+	
+	i=0;
+	ret=0;
+	while(i<4 && ret==0) {
+		ret += CheckValue(EEPROM_ReadWord(16*i), MIN_T_REG, MAX_T_REG);
+		ret += CheckValue(EEPROM_ReadWord(16*i+4), MIN_PWM, MAX_PWM);
+		ret += CheckValue(EEPROM_ReadWord(16*i+8), MIN_PWM, MAX_PWM);
+		ret += CheckValue(EEPROM_ReadWord(16*i+12), MIN_HYST, MAX_HYST);
+		i++;
+	}
+	
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_start_duration), MIN_START_DURATION, MAX_START_DURATION);
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_start_pwm), MIN_PWM, MAX_PWM);
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_reg_enable), OFF, ON);
+	
+	if(ret>0) {
+		return 1;
+	}
+	
+	return 0;
+}
+
+uint32_t Param_Reset(void) {
+	uint32_t ret, i = 0;
+	
+	ret=0;
+	for(i=0;i<4;i++) {
+		ret+=EEPROM_WriteWord(16*i, DEFAULT_T_REG);
+		ret+=EEPROM_WriteWord(16*i+4, DEFAULT_D_MIN);
+		ret+=EEPROM_WriteWord(16*i+8, DEFAULT_D_MAX);
+		ret+=EEPROM_WriteWord(16*i+12, DEFAULT_HYST);
+	}
+	
+	if(ret>0) {
+		return 1;
+	}
+	
+	return 0;
 }
 
 uint32_t Param_Restore(void) {
@@ -513,10 +572,10 @@ uint32_t cmd_Set(void){
 	if(ret>0) return 1;
 	
 	ret=0;
-	ret+=CheckValue(channel,1,4);
-	ret+=CheckValue(temp,0,999);
-	ret+=CheckValue(pwm_min,0,100);
-	ret+=CheckValue(pwm_max,0,100);
+	ret+=CheckValue(channel,MIN_CHANNEL,MAX_CHANNEL);
+	ret+=CheckValue(temp,MIN_T_REG,MAX_T_REG);
+	ret+=CheckValue(pwm_min,MIN_PWM,MAX_PWM);
+	ret+=CheckValue(pwm_max,MIN_PWM,MAX_PWM);
 	if(ret>0) return 1;
 	
 	//From 1 to 4 in uart but from 0 to 3 in flash
@@ -545,8 +604,8 @@ uint32_t cmd_Start(void) {
 	start_duration=atoi(g_mes.arguments[1]);
 	
 	ret=0;
-	ret+=CheckValue(start_pwm,0,100);
-	ret+=CheckValue(start_duration,0,60000);
+	ret+=CheckValue(start_pwm,MIN_PWM,MAX_PWM);
+	ret+=CheckValue(start_duration,MIN_START_DURATION,MAX_START_DURATION);
 	
 	if(ret>0) return 1;
 	
@@ -567,8 +626,8 @@ uint32_t cmd_Hyst(void) {
 	hyst_value=atoi(g_mes.arguments[1]);
 	
 	ret=0;
-	ret+=CheckValue(channel,1,4);
-	ret+=CheckValue(hyst_value,0,50);
+	ret+=CheckValue(channel,MIN_CHANNEL,MAX_CHANNEL);
+	ret+=CheckValue(hyst_value,MIN_HYST,MAX_HYST);
 	
 	if(ret>0) return 1;
 	

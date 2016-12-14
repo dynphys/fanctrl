@@ -8,7 +8,9 @@
 #define DEFAULT_T_REG 					250
 #define DEFAULT_D_MIN 					0
 #define DEFAULT_D_MAX 					100
-#define DEFAULT_HYS 						10
+#define DEFAULT_HYST 						10
+#define DEFAULT_START_DURATION	1000
+#define DEFAULT_START_PWM				100
 #define DEFAULT_UART_LENGTH 		128
 #define MAX_ARGS								16
 #define START_DELIMITER					0x3A
@@ -20,6 +22,18 @@
 #define MSG_UART_NOK						"ERROR\r\n"
 #define MSG_REG_ON							"Regulation enabled.\r\n"
 #define MSG_REG_OFF							"Regulation disabled.\r\n"
+
+
+#define MIN_START_DURATION      0
+#define MAX_START_DURATION			60000
+#define MIN_CHANNEL							1
+#define MAX_CHANNEL							4
+#define MIN_T_REG								0
+#define MAX_T_REG								1000
+#define MIN_PWM									0
+#define MAX_PWM									100
+#define MIN_HYST								5
+#define MAX_HYST								50
 
 /* Flash map */
 #define __FLASH_start_pwm				64
@@ -76,11 +90,14 @@ typedef struct {
 HAL_StatusTypeDef 	EEPROM_WriteWord(uint32_t address, uint32_t data);
 HAL_StatusTypeDef 	EEPROM_WriteByte(uint32_t address, uint32_t data);
 uint32_t 						Firmware_Init(void);
+uint32_t 						Flash_Init(void);
 uint32_t 						LM35_Convert(void);
 uint32_t 						PWM_Set(RegProfile_t * channel, uint32_t duty_cycle);
 uint32_t 						Set_Regulation(States_t state);
 uint32_t 						PWM_Update(RegProfile_t * channel, uint32_t temp);
 uint32_t 						Param_Backup(RegProfile_t * profile, uint32_t channel);
+uint32_t 						Param_Check(void);
+uint32_t 						Param_Reset(void);
 uint32_t 						Param_Restore(void);
 uint32_t 						UART_Send(char * pBuffer, uint32_t length);
 uint32_t 						CheckValue(uint32_t val, uint32_t min, uint32_t max);
