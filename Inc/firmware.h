@@ -9,9 +9,10 @@
 #define DEFAULT_D_MIN           0
 #define DEFAULT_D_MAX           100
 #define DEFAULT_HYST            10
-#define DEFAULT_START_DURATION  1000
+#define DEFAULT_START_DURATION  10000
 #define DEFAULT_START_PWM       100
 #define DEFAULT_UART_LENGTH     128
+#define DEFAULT_REG_ENABLE      1
 #define MAX_ARGS                16
 #define START_DELIMITER         0x3A
 #define SEPARATOR               0x2C
@@ -20,8 +21,11 @@
 #define TEMP_DEN                1365
 #define MSG_UART_OK             "OK\r\n"
 #define MSG_UART_NOK            "ERROR\r\n"
-#define MSG_REG_ON              "Regulation enabled.\r\n"
-#define MSG_REG_OFF             "Regulation disabled.\r\n"
+#define MSG_REG_ON              "INFO: Regulation enabled.\r\n"
+#define MSG_REG_OFF             "INFO: Regulation disabled.\r\n"
+#define MSG_NVM_COR							"WARNING: NVM corrupted or empty.\r\n"
+#define MSG_NVM_RST							"WARNING: NVM reset.\r\n"
+#define MSG_START								"START.\r\n"
 
 
 #define MIN_START_DURATION      0
@@ -36,9 +40,9 @@
 #define MAX_HYST                50
 
 /* Flash map */
-#define __FLASH_start_pwm       64
-#define __FLASH_start_duration  68
-#define __FLASH_reg_enable      72
+#define __FLASH_START_PWM       64
+#define __FLASH_START_DURATION  68
+#define __FLASH_REG_ENABLE      72
 
 typedef enum {
 	OFF=0,

@@ -115,9 +115,18 @@ uint32_t Firmware_Init(void) {
 
 uint32_t Flash_Init(void) {
 	uint32_t ret = 0;
+	char buf[DEFAULT_UART_LENGTH];
 	
 	ret = Param_Check();
 	if(ret>0) {
+		memset(buf,0,sizeof(buf));
+		strcpy(buf,MSG_NVM_COR);
+		UART_Send(buf, strlen(buf));
+		
+		memset(buf,0,sizeof(buf));
+		strcpy(buf,MSG_NVM_RST);
+		UART_Send(buf, strlen(buf));
+		
 		ret=Param_Reset();
 	}
 
@@ -126,6 +135,10 @@ uint32_t Flash_Init(void) {
 	if(ret>0) {
 		return 1;
 	}
+	
+	memset(buf,0,sizeof(buf));
+	strcpy(buf,MSG_START);
+	UART_Send(buf, strlen(buf));
 	
 	return 0;
 }
@@ -144,7 +157,7 @@ uint32_t Set_Regulation(States_t state){
 		g_RegCh3.RegState=UNKNOWN;
 		g_RegCh4.RegState=UNKNOWN;
 		
-		EEPROM_WriteWord(__FLASH_reg_enable, g_reg_enable);
+		EEPROM_WriteWord(__FLASH_REG_ENABLE, g_reg_enable);
 		
 		strcpy(buf,MSG_REG_ON);
 		UART_Send(buf,strlen(buf));
@@ -161,7 +174,7 @@ uint32_t Set_Regulation(States_t state){
 		LED_All(GREEN,OFF);
 		LED_All(RED,OFF);
 		
-		EEPROM_WriteWord(__FLASH_reg_enable, g_reg_enable);
+		EEPROM_WriteWord(__FLASH_REG_ENABLE, g_reg_enable);
 		
 		strcpy(buf,MSG_REG_OFF);
 		UART_Send(buf,strlen(buf));
@@ -288,9 +301,9 @@ uint32_t Param_Check(void) {
 		i++;
 	}
 	
-	ret += CheckValue(EEPROM_ReadWord(__FLASH_start_duration), MIN_START_DURATION, MAX_START_DURATION);
-	ret += CheckValue(EEPROM_ReadWord(__FLASH_start_pwm), MIN_PWM, MAX_PWM);
-	ret += CheckValue(EEPROM_ReadWord(__FLASH_reg_enable), OFF, ON);
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_START_DURATION), MIN_START_DURATION, MAX_START_DURATION);
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_START_PWM), MIN_PWM, MAX_PWM);
+	ret += CheckValue(EEPROM_ReadWord(__FLASH_REG_ENABLE), OFF, ON);
 	
 	if(ret>0) {
 		return 1;
@@ -309,6 +322,10 @@ uint32_t Param_Reset(void) {
 		ret+=EEPROM_WriteWord(16*i+8, DEFAULT_D_MAX);
 		ret+=EEPROM_WriteWord(16*i+12, DEFAULT_HYST);
 	}
+	
+	ret+=EEPROM_WriteWord(__FLASH_START_DURATION, DEFAULT_START_DURATION);
+	ret+=EEPROM_WriteWord(__FLASH_START_PWM, DEFAULT_START_PWM);
+	ret+=EEPROM_WriteWord(__FLASH_REG_ENABLE, DEFAULT_REG_ENABLE);
 	
 	if(ret>0) {
 		return 1;
@@ -331,7 +348,7 @@ uint32_t Param_Restore(void) {
 	}
 
 	//Load regulator state
-	g_reg_enable = EEPROM_ReadWord(__FLASH_reg_enable);
+	g_reg_enable = EEPROM_ReadWord(__FLASH_REG_ENABLE);
 	
 	return 0;
 }
@@ -427,8 +444,8 @@ uint32_t DustOff(void) {
 	uint32_t start_pwm, start_duration, ret,i;
 	RegProfile_t * pArr[4] = {&g_RegCh1,&g_RegCh2,&g_RegCh3,&g_RegCh4};
 	
-	start_pwm = EEPROM_ReadWord(__FLASH_start_pwm);
-	start_duration = EEPROM_ReadWord(__FLASH_start_duration);
+	start_pwm = EEPROM_ReadWord(__FLASH_START_PWM);
+	start_duration = EEPROM_ReadWord(__FLASH_START_DURATION);
 	
 	//Set channels
 	ret=0;
@@ -610,8 +627,8 @@ uint32_t cmd_Start(void) {
 	if(ret>0) return 1;
 	
 	ret=0;
-	ret+=EEPROM_WriteWord(__FLASH_start_pwm, start_pwm);
-	ret+=EEPROM_WriteWord(__FLASH_start_duration, start_duration);
+	ret+=EEPROM_WriteWord(__FLASH_START_PWM, start_pwm);
+	ret+=EEPROM_WriteWord(__FLASH_START_DURATION, start_duration);
 	
 	if(ret>0) return 1;
 	
