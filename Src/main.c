@@ -87,7 +87,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 	Firmware_Init();
-	Param_Restore();
+	Flash_Init();
 	DustOff();
   /* USER CODE END 2 */
 
