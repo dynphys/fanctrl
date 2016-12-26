@@ -23,9 +23,9 @@
 #define MSG_UART_NOK            "ERROR\r\n"
 #define MSG_REG_ON              "INFO: Regulation enabled.\r\n"
 #define MSG_REG_OFF             "INFO: Regulation disabled.\r\n"
-#define MSG_NVM_COR							"WARNING: NVM corrupted or empty.\r\n"
-#define MSG_NVM_RST							"WARNING: NVM reset.\r\n"
-#define MSG_START								"START.\r\n"
+#define MSG_NVM_COR             "WARNING: NVM corrupted or empty.\r\n"
+#define MSG_NVM_RST             "WARNING: NVM reset.\r\n"
+#define MSG_START               "START.\r\n"
 
 
 #define MIN_START_DURATION      0
